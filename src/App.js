@@ -17,11 +17,13 @@ const App = () => {
   function handleChangeInput(e){
     setInput(e)
   }
+  const token = localStorage.getItem('react-demo-token');
 
   return (
     <div>
       <Router>
-        <Header handleChangeInput={(e)=>handleChangeInput(e)} />
+        {token!=null?<Header handleChangeInput={(e)=>handleChangeInput(e)} />:''}
+        {/* <Header handleChangeInput={(e)=>handleChangeInput(e)} /> */}
         {/* <Test /> */}
         <Routes>
           <Route path="/" element={<Login  />} />
