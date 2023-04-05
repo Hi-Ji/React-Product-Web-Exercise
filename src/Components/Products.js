@@ -17,7 +17,7 @@ import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
 import ClearIcon from '@mui/icons-material/Clear';
-import Add_Sort_product from './Add_Sort_product';
+import Add_Sort_product from './AddSortProduct';
 import { editApiGet, editApiPost } from './Service/editService';
 import { addApiGet, addApiPost } from './Service/addService';
 

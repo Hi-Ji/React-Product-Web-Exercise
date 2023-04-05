@@ -54,7 +54,7 @@ const New_add_product = ( { openRowProductInput, excelUpLoad, excelDownLoad, edi
 
 
   return (
-    <div className={`add_sort_totol ${editIdNum ==null?'':'add_up_down'}  ${addInputState ==false?'':'add_up_down'}`}>
+    <div className={`add_sort_totol ${editIdNum == null?'':'add_up_down'}  ${addInputState == false?'':'add_up_down'}`}>
 
         <AddIcon className='product_add_button' onClick={()=>{openRowProductInput();changePage()}}  />
 
