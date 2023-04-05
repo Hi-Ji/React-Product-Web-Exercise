@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -9,16 +8,8 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import React, { useEffect, useState, useRef } from 'react'
 import axios from 'axios';
@@ -27,22 +18,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
 import ClearIcon from '@mui/icons-material/Clear';
 import Add_Sort_product from './Add_Sort_product';
-import { NoEncryption, Sync } from '@mui/icons-material';
 import { editApiGet, editApiPost } from './Service/editService';
 import { addApiGet, addApiPost } from './Service/addService';
-//import Header from './Header'
-
-
-
-
-// Since 2020 all major browsers ensure sort stability with Array.prototype.sort().
-// stableSort() brings sort stability to non-modern browsers (notably IE11). If you
-// only support modern browsers you can replace stableSort(exampleArray, exampleComparator)
-// with exampleArray.slice().sort(exampleComparator)
-
 
 const token = localStorage.getItem('react-demo-token');
-// const token = '7|IezjQaYkwPOFS1dWqbUpBdNULqhEcMrw8jdb0rxq';
 
 const headCells = [
   { id: 'name', label: 'Name', align: 'center',},
@@ -82,12 +61,10 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
-            
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
@@ -118,20 +95,7 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-
-
-
-
-//------------------------------------------
-
-
-
-
-
-
-
 //============================================
-
 const EnhancedTable = ( { search } ) => {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -139,7 +103,6 @@ const EnhancedTable = ( { search } ) => {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
 
   const [rows, setRows] = useState([])
   const [tempRows, setTempRows] = useState([]);
@@ -175,7 +138,6 @@ const EnhancedTable = ( { search } ) => {
         selected.slice(selectedIndex + 1),
       );
     }
-
     setSelected(newSelected);
   };
 
@@ -194,32 +156,24 @@ const EnhancedTable = ( { search } ) => {
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
-
-  // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
 
   //-----------------------------------------
 
   const [tasks, setTasks] = useState([])
   const [tempTasks, setTempTasks] = useState([])
 
-  
   const fileInputRef = useRef(null);
 
   const handleIconClick = () => {
     fileInputRef.current.click();
   };
 
-  //-----upload excel
   const [excel, setExcel] = useState([])
     const excelData = (e)=>{
       setExcel([...excel,...e])
-      // console.log(e)
     }
-
-//-------
 
   useEffect(() => {
     getTasks()
@@ -230,28 +184,19 @@ const EnhancedTable = ( { search } ) => {
   const getTasks = async () => {
     const taskFromServer = await fetchTasks()
 
-    
-
     if(excel.length !=0){
       excel.map((e)=>taskFromServer.push({name:e.Name,description:e.Description,price:e.Price,id:e.Id}))
-
-      
-      console.log(taskFromServer)
     }
 
     setTasks(taskFromServer)
     setTempTasks(taskFromServer)
-    
-    
   }
 
 const fetchTasks = async () => {
   const res = await fetch('http://localhost:8000/api/products')
   const data = await res.json()
-  // console.log('fetchTasks')
   return data;
 }
-
 
 function outputImg(img) {
   let imgAddress='http://localhost:8000/storage/' + img;
@@ -260,13 +205,11 @@ function outputImg(img) {
 }
 //api to img ^ ^
 
-
   //Add product
   const [name, setName] = React.useState('')
   const [description, setDescription] = React.useState('')
   const [price, setPrice] = React.useState(Number)
   const [image, setImage] = React.useState(null)
-
 
   //cancel add reload 
   const replaceReloadForAdd =(data)=>{
@@ -276,10 +219,7 @@ function outputImg(img) {
         id:data.id,
         price:data.price,
         image:<img src={`http://localhost:8000/storage/${data.product_image}`} />}])
-        
     getTasks()
-    // console.log(data.id)
-    // console.log(data.product_image)
   }
 
 
@@ -287,27 +227,19 @@ function outputImg(img) {
   const headers = {
     'Authorization': `Bearer ${token}`,
     'Content-Type': 'multipart/form-data',
-    //token:'0gTn7GNRjalUuF2rO',
   };
   const addTasks = (event) => {
     event.preventDefault();
-
     const formData = new FormData();
     formData.append('name', name);
     formData.append('description', description);
     formData.append('price', price);
     formData.append('slug', 99);
-    //formData.append('category_id', 99);
     image && formData.append('product_image', image)
     
-    console.log(image)
-
     for (let pair of formData.entries()) {
       console.log(pair[0] + ': ' + pair[1]);
     }
-    //axios.post(`https://app.spiritx.co.nz/api/products`
-    //addApiPost(`products`
-    //axios.post(`http://localhost:8000/api/products`
     addApiPost(`products`, formData, {headers})
     .then(response => {
       console.log(response.data);
@@ -316,14 +248,12 @@ function outputImg(img) {
       setDescription('')
       setPrice(null)
       setImage(null)
-      // window.location.reload();
       replaceReloadForAdd(response.data)
     })
     .catch(error => {
       console.error(error);
     });
   };
-
 
   //delete id number
   const [delete_id_num, setDelete_id_num] = useState(Number);
@@ -334,13 +264,11 @@ function outputImg(img) {
     setDelete_id_num(id);
   }
 
-
   //从后端删除
   const deleteTasks = (id) =>{
     axios.delete('http://localhost:8000/api/products/'+id, { headers })
     .then(response => {
       console.log(response.data);
-      // window.location.reload();
       replaceReloadForDelete(response.data)
     })
     .catch(error => {
@@ -356,8 +284,6 @@ function outputImg(img) {
     console.log(data.id)
     // console.log(data.product_image)
   }
-
-
 
 //product input show set
   const [showRowsInput, setShowRowsInput] = useState(false);
@@ -376,7 +302,6 @@ function outputImg(img) {
     price:<input type="number" className='product_input' value={price} onChange={(e)=>setPrice(e.target.value)} />,
     product_image:
     <div>
-
       {image!=null? <img className='selectImg' src={window.URL.createObjectURL(image)}/>:''}
       <input
         type="file"
@@ -389,7 +314,6 @@ function outputImg(img) {
         onClick={handleIconClick} className='product_image_input' />
     </div>,
     action:
-    //${name==''||description==''||price==''?'untouch':''}
       <div>
         <DoneIcon className={`product_yes_no_icon ${name==''||description==''||price==''?'untouch':''}`} onClick={addTasks} />
         <ClearIcon className='product_yes_no_icon' onClick={()=>{handleChangeShowRowsInputClose();setName('');
@@ -408,14 +332,11 @@ function outputImg(img) {
 
   const handleChangeEditId = (id) => {
     setEdit_id_num(id);
-    // console.log(edit_id_num)
   }
 
   const handleChangeClearEditId = () => {
     setEdit_id_num(null);
-    
   }
-
 
   //Show Edit Delete or Yes No
   const [showED, setShowED] = useState(true);
@@ -424,9 +345,11 @@ function outputImg(img) {
   useEffect(() => {
     EDorYN()
   }, [delete_id_num]);
+
   const handleChangeOpenED = () => {
     setShowED(true);
   }
+
   const handleChangeCloseED = () => {
     setShowED(false);
   }
@@ -435,10 +358,6 @@ function outputImg(img) {
     setShowYN(!showYN);
   }
 
-
-//--------------------------------
-//------------------------
-//-----------0---------------------
   const [editName, setEditName] = useState('')
   const [editDescription, setEditDescription] = useState('')
   const [editPrice, setEditPrice] = useState(Number)
@@ -449,7 +368,6 @@ function outputImg(img) {
   const [tempEditPrice, setTempEditPrice] = useState(Number)
   const [tempEditImage, setTempEditImage] = useState(null)
 
-
   //Edit Delete button 
   function Edit_delete_button(e){
     return (<div className='div_of_edit_delete'>
@@ -457,12 +375,9 @@ function outputImg(img) {
       setEditName(e.name);
       setEditDescription(e.description);
       setEditPrice(e.price);
-      
       setTempEditName(e.name);
       setTempEditDescription(e.description);
       setTempEditPrice(e.price);
-      // setEditImage('https://app.spiritx.co.nz/storage/'+e.product_image);
-      // console.log('https://app.spiritx.co.nz/storage/'+e.product_image)
       }} />
       <DeleteIcon className='product_edit_delete_icon' onClick={()=>{handleChangeDeleteId(e.id)}} /></div>)
   }
@@ -479,16 +394,8 @@ function outputImg(img) {
     }
     formData.append('_method','put')
     
-
-    
-
-    //axios.post(`https://app.spiritx.co.nz/api/product/${edit_id_num}`
-    //axios.post(`http://localhost:8000/api/products/${edit_id_num}`
-    //apiPost(`product/${edit_id_num}`
-    //editApiPost(`products/${edit_id_num}`
     editApiPost(`products/${edit_id_num}`,formData, { headers }).then((res)=>{
       console.log(res.data)
-      // window.location.reload()
       replaceReloadForEdit(res.data)
     }).catch((err)=>console.log(err))
   }
@@ -508,21 +415,12 @@ function outputImg(img) {
       }
     });
     setTasks(newTasks);
-
-    getTasks()
-    // console.log(data.id)
-    // console.log(data.product_image)
+    getTasks();
   }
 
   
   //Yes No button 
   function Yes_No_button(id){
-    //${name==''||description==''||price==''?'untouch':''}
-
-    //name==''||description==''||price==''
-    // console.log(editImage==tempEditImage)
-    // console.log(editImage==null)
-    // console.log(tempEditImage)
     return(<div className='div_of_yes_no'>
     <DoneIcon className={`product_yes_no_icon 
     ${tempEditName==editName&&tempEditDescription==editDescription&&tempEditPrice==editPrice&&editImage==null?'untouch':''} `} onClick={()=>{editProducts();handleChangeClearEditId();handleChangeOpenED();setEditImage(null)}}  />
@@ -530,29 +428,10 @@ function outputImg(img) {
   </div>)
   }
 
-  //获取Edit ID
-  const getEditId = () => {
-    console.log(edit_id_num)
-    return edit_id_num;
-  }
-  //获取Delete ID
-  const getDeleteId = () => {
-    console.log(delete_id_num)
-    return delete_id_num;
-  }
-
   function EDorYN(id,e){
     return !showED && id==edit_id_num ? Yes_No_button(id) : Edit_delete_button(e);
   }
-  
 
- 
-  
-  
-  
-    
-
-   
 //tasks to rows
     const editProduct = (e) => {
       return !showED && e.id==edit_id_num ? 
@@ -637,14 +516,12 @@ function outputImg(img) {
     //search input
     const searchProduct = () => {
       let temTasks = [...tempTasks]
-
       const filteredTasks = temTasks.filter(
         (product) =>
           product.name.includes(search) ||
           product.description.includes(search) ||
           String(product.price).includes(search)
       );
-
       if(filteredTasks.length==0){
         setTasks([{name:'Sorry',description:'No Products',price:0}]);
       }else{
@@ -665,25 +542,14 @@ function outputImg(img) {
       setPage(0)
     }
 
-    // const test = ()=>{
-    //   console.log(token)
-    // }
-
-
-
-    
-
 //============================================
 
   return (
     <Box sx={{ width: '100%' }} className='product_box'>
-      {/* <button onClick={test}>test</button> */}
-
       {
         token != null ? <Add_Sort_product openRowProductInput={handleChangeShowRowsInputOpen} excelUpLoad={excelUpLoad} excelDownLoad={excelDownLoad} editIdNum={edit_id_num} addInputState={showRowsInput} rows={rows} excelData={excelData} changePage={changePage} />: ''
       }
       <Paper sx={{ width: '100%', mb: 2 }}>
-        
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -697,29 +563,20 @@ function outputImg(img) {
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
-              
             />
-            
-
             {/* ------- */}
-
-          
             {showRowsInput ? <TableBody>
               {rowsInput
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  
                   const labelId = `enhanced-table-checkbox-${index}`;
-
                   return (
                     <TableRow
                       hover
                       onClick={(event) => handleClick(event, row.name)}
                       role="checkbox"
-                      
                       tabIndex={-1}
                       key={row.name}
-                      
                       sx={{ cursor: 'pointer' }}
                     >
                       <TableCell
@@ -756,15 +613,11 @@ function outputImg(img) {
               )}
             </TableBody> : ''}
 
-            
-            
             <TableBody>
                 {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  
                   const labelId = `enhanced-table-checkbox-${index}`;
-
                   return (
                     <TableRow
                       hover
@@ -793,27 +646,21 @@ function outputImg(img) {
 
                       <TableCell align="center" 
                       className={`${row.id!=edit_id_num && edit_id_num!=null ?'product_table_col':''}`}>{row.product_image}</TableCell>
-
                       {token != null ? <TableCell 
                       align="center" 
                       className={`${row.id!=edit_id_num && edit_id_num!=null ?'product_table_col':''}`}
                        >{row.action}</TableCell>:null}
-                      
                     </TableRow>
                   );
                 })}
               {emptyRows > 0 && (
                 <TableRow
-                  
                 >
                   <TableCell colSpan={6} />
                 </TableRow>
               )}
             </TableBody> 
              {/* ------ */}
-
-            
-
           </Table>
         </TableContainer>
         <TablePagination

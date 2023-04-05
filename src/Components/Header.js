@@ -66,7 +66,9 @@ const SearchAppBar = ( { handleChangeInput } ) => {
     localStorage.clear();
     token = localStorage.getItem('react-demo-token');
     console.log(token)
-    // window.location.reload()
+    setTimeout(() => {
+      window.location.reload()
+    }, 1000)
     alert('logged out')
     navigate('/');
   }
