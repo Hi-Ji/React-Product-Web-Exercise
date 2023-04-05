@@ -501,9 +501,6 @@ function outputImg(img) {
 
     }, [order,orderBy])
 
-
-
-
     //excel
     const excelUpLoad = () => {
       console.log('Excel Up Load')
