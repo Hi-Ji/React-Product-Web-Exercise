@@ -233,7 +233,7 @@ body{
 .product_image_input{
   color: #1b75cf;
   width: 150px!important;
-  height: 40px!important;
+  height: 50px!important;
 }
 
 .product_img{
@@ -353,5 +353,9 @@ body{
   opacity: 0.5;
   pointer-events: none;
   color: rgb(94, 94, 94);
+}
 
+.selectImg{
+  width: 80px;
+  margin-right: -50px;
 }

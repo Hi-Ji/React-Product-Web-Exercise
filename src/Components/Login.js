@@ -13,7 +13,7 @@ const Login = () => {
 
 
   function login_to_swagger() {
-    const loginUrl = 'https://app.spiritx.co.nz/api/login';
+    const loginUrl = 'http://localhost:8000/api/login';
     const email = inputEmail;
     const password = inputPassword;
 
@@ -22,7 +22,7 @@ const Login = () => {
       password
     }).then(res => {
       console.log(res)
-      localStorage.setItem('react-demo-token', res.data.token.token)
+      localStorage.setItem('react-demo-token', res.data.token)
       localStorage.setItem('react-demo-user', JSON.stringify(res.data.user))
 
       setTimeout(() => {

@@ -6,6 +6,6 @@ const axiosInstance = editSetupInterceptorsTo(axios.create())
 
 export const editApiGet = async (path) => axiosInstance.get(`${BaseUrl}${path}`)
 
-export const editApiPost = async (path, data) =>{
+export const editApiPost = async (path, data, header) =>{
   // console.log('Request data:', data);
-  return axiosInstance.post(`${BaseUrl}${path}`, data)}
+  return axiosInstance.post(`${BaseUrl}${path}`, data, header)}

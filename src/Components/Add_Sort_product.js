@@ -9,7 +9,7 @@ import * as XLSX from 'xlsx';
 const New_add_product = ( { openRowProductInput, excelUpLoad, excelDownLoad, editIdNum, addInputState, rows, excelData, changePage } ) => {
   
   const headers = [
-    { key: 'title', label: 'Name'},
+    { key: 'name', label: 'Name'},
     {
       key: 'description',
       label: 'Description',

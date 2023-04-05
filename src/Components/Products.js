@@ -42,9 +42,10 @@ import Header from './Header'
 
 
 const token = localStorage.getItem('react-demo-token');
+// const token = '7|IezjQaYkwPOFS1dWqbUpBdNULqhEcMrw8jdb0rxq';
 
 const headCells = [
-  { id: 'title', label: 'Name', align: 'center',},
+  { id: 'name', label: 'Name', align: 'center',},
   {
     id: 'description',
     label: 'Description',
@@ -232,7 +233,7 @@ const EnhancedTable = ( { search } ) => {
     
 
     if(excel.length !=0){
-      excel.map((e)=>taskFromServer.push({title:e.Name,description:e.Description,price:e.Price,id:e.Id}))
+      excel.map((e)=>taskFromServer.push({name:e.Name,description:e.Description,price:e.Price,id:e.Id}))
 
       
       console.log(taskFromServer)
@@ -245,7 +246,7 @@ const EnhancedTable = ( { search } ) => {
   }
 
 const fetchTasks = async () => {
-  const res = await fetch('https://app.spiritx.co.nz/api/products')
+  const res = await fetch('http://localhost:8000/api/products')
   const data = await res.json()
   // console.log('fetchTasks')
   return data;
@@ -253,7 +254,7 @@ const fetchTasks = async () => {
 
 
 function outputImg(img) {
-  let imgAddress='https://app.spiritx.co.nz/storage/' + img;
+  let imgAddress='http://localhost:8000/storage/' + img;
   let product_image = <img src={imgAddress} className='product_img' />;
   return product_image;
 }
@@ -270,11 +271,11 @@ function outputImg(img) {
   //cancel add reload 
   const replaceReloadForAdd =(data)=>{
     setTasks([...tasks,
-      {title:data.title,
+      {name:data.name,
         description:data.description,
         id:data.id,
         price:data.price,
-        image:<img src={`https://app.spiritx.co.nz/storage/${data.product_image}`} />}])
+        image:<img src={`http://localhost:8000/storage/${data.product_image}`} />}])
         
     getTasks()
     // console.log(data.id)
@@ -284,22 +285,29 @@ function outputImg(img) {
 
   //向后端add Product
   const headers = {
-    token: token,
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'multipart/form-data',
+    //token:'0gTn7GNRjalUuF2rO',
   };
   const addTasks = (event) => {
     event.preventDefault();
 
     const formData = new FormData();
-    formData.append('title', name);
+    formData.append('name', name);
     formData.append('description', description);
     formData.append('price', price);
-    formData.append('category_id', 99);
-    if(image!=null){
-      formData.append('product_image',image)
+    formData.append('slug', 99);
+    //formData.append('category_id', 99);
+    image && formData.append('product_image', image)
+    
+    console.log(image)
+
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ': ' + pair[1]);
     }
-    console.log(formData)
     //axios.post(`https://app.spiritx.co.nz/api/products`
     //addApiPost(`products`
+    //axios.post(`http://localhost:8000/api/products`
     addApiPost(`products`, formData, {headers})
     .then(response => {
       console.log(response.data);
@@ -329,7 +337,7 @@ function outputImg(img) {
 
   //从后端删除
   const deleteTasks = (id) =>{
-    axios.delete('https://app.spiritx.co.nz/api/product/'+id, { headers })
+    axios.delete('http://localhost:8000/api/products/'+id, { headers })
     .then(response => {
       console.log(response.data);
       // window.location.reload();
@@ -360,13 +368,16 @@ function outputImg(img) {
     setShowRowsInput(false)
   }
 
+
   //product input
   const rowsInput = [{
-    title:<input type="text" className='product_input' value={name} onChange={(e)=>setName(e.target.value)} />,
+    name:<input type="text" className='product_input' value={name} onChange={(e)=>setName(e.target.value)} />,
     description:<input type="text" className='product_input' value={description} onChange={(e)=>setDescription(e.target.value)} />,
     price:<input type="number" className='product_input' value={price} onChange={(e)=>setPrice(e.target.value)} />,
     product_image:
     <div>
+
+      {image!=null? <img className='selectImg' src={window.URL.createObjectURL(image)}/>:''}
       <input
         type="file"
         style={{ display: 'none' }}
@@ -443,10 +454,11 @@ function outputImg(img) {
   function Edit_delete_button(e){
     return (<div className='div_of_edit_delete'>
       <EditIcon className='product_edit_delete_icon' onClick={()=>{handleChangeEditId(e.id);handleChangeCloseED();handleChangeOpenYN();
-      setEditName(e.title);
+      setEditName(e.name);
       setEditDescription(e.description);
       setEditPrice(e.price);
-      setTempEditName(e.title);
+      
+      setTempEditName(e.name);
       setTempEditDescription(e.description);
       setTempEditPrice(e.price);
       // setEditImage('https://app.spiritx.co.nz/storage/'+e.product_image);
@@ -458,23 +470,23 @@ function outputImg(img) {
   //Edit product
   const editProducts = () => {
     const formData = new FormData()
-    formData.append('title',editName)
+    formData.append('name',editName)
     formData.append('description',editDescription)
     formData.append('price',editPrice)
+    formData.append('slug', 99);
     if(editImage!=null){
       formData.append('product_image',editImage)
     }
     formData.append('_method','put')
     
 
-    for (let pair of formData.entries()) {
-      console.log(pair[0] + ': ' + pair[1]);
-    }
     
 
     //axios.post(`https://app.spiritx.co.nz/api/product/${edit_id_num}`
+    //axios.post(`http://localhost:8000/api/products/${edit_id_num}`
     //apiPost(`product/${edit_id_num}`
-    editApiPost(`product/${edit_id_num}`,formData).then((res)=>{
+    //editApiPost(`products/${edit_id_num}`
+    editApiPost(`products/${edit_id_num}`,formData, { headers }).then((res)=>{
       console.log(res.data)
       // window.location.reload()
       replaceReloadForEdit(res.data)
@@ -486,11 +498,11 @@ function outputImg(img) {
     const newTasks = tasks.map(task => {
       if (task.id === data.id) {
         return {
-          title:data.title,
+          name:data.name,
           description:data.description,
           id:data.id,
           price:data.price,
-          image:<img src={`https://app.spiritx.co.nz/storage/${data.product_image}`} />};
+          image:<img src={`http://localhost:8000/storage/${data.product_image}`} />};
       } else {
         return task;
       }
@@ -545,7 +557,7 @@ function outputImg(img) {
     const editProduct = (e) => {
       return !showED && e.id==edit_id_num ? 
       {
-        title:<input type="text" className='product_input' value={editName} onChange={(e)=>{setEditName(e.target.value)}} />
+        name:<input type="text" className='product_input' value={editName} onChange={(e)=>{setEditName(e.target.value)}} />
         , 
         id:e.id
         ,
@@ -554,6 +566,7 @@ function outputImg(img) {
         price:<input type="number" className='product_input' value={editPrice} onChange={(e)=>{setEditPrice(e.target.value)}} />
         , 
         product_image:<div>
+          {editImage!=null? <img className='selectImg' src={window.URL.createObjectURL(editImage)}/>:''}
           <input
             type="file"
             style={{ display: 'none' }}
@@ -570,7 +583,7 @@ function outputImg(img) {
         </div>
     }
       :
-      {title:e.title, id:e.id, description:e.description, price:e.price, product_image:outputImg(e.product_image), action:
+      {name:e.name, id:e.id, description:e.description, price:e.price, product_image:outputImg(e.product_image), action:
         <div className='div_of_action' >
           {EDorYN(e.id,e)}
         </div>
@@ -605,7 +618,7 @@ function outputImg(img) {
       });
 
       setTasks(temTasks);
-      setTempTasks(temTasks)
+      setTempTasks(temTasks);
 
     }, [order,orderBy])
 
@@ -624,15 +637,16 @@ function outputImg(img) {
     //search input
     const searchProduct = () => {
       let temTasks = [...tempTasks]
+
       const filteredTasks = temTasks.filter(
         (product) =>
-          product.title.includes(search) ||
+          product.name.includes(search) ||
           product.description.includes(search) ||
-          product.price.includes(search)
+          String(product.price).includes(search)
       );
-      
+
       if(filteredTasks.length==0){
-        setTasks([{title:'Sorry',description:'No Products',price:0}]);
+        setTasks([{name:'Sorry',description:'No Products',price:0}]);
       }else{
         setTasks(filteredTasks);
       }
@@ -651,7 +665,9 @@ function outputImg(img) {
       setPage(0)
     }
 
-    
+    // const test = ()=>{
+    //   console.log(token)
+    // }
 
 
 
@@ -662,6 +678,7 @@ function outputImg(img) {
   return (
     <Box sx={{ width: '100%' }} className='product_box'>
       {/* <button onClick={test}>test</button> */}
+
       {
         token != null ? <Add_Sort_product openRowProductInput={handleChangeShowRowsInputOpen} excelUpLoad={excelUpLoad} excelDownLoad={excelDownLoad} editIdNum={edit_id_num} addInputState={showRowsInput} rows={rows} excelData={excelData} changePage={changePage} />: ''
       }
@@ -711,7 +728,7 @@ function outputImg(img) {
                         scope="row"
                         padding="none"
                       >
-                        {row.title}
+                        {row.name}
                       </TableCell>
 
                       <TableCell align="center" 
@@ -765,7 +782,7 @@ function outputImg(img) {
                         padding="none"
                         className={`${row.id!=edit_id_num && edit_id_num!=null ?'product_table_col':''}`}
                       >
-                        {row.title}
+                        {row.name}
                       </TableCell>
 
                       <TableCell align="center" 
