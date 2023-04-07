@@ -18,8 +18,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
 import ClearIcon from '@mui/icons-material/Clear';
 import Add_Sort_product from './AddSortProduct';
-import { editApiGet, editApiPost } from './Service/editService';
-import { addApiGet, addApiPost } from './Service/addService';
+import TableBodyPart from './TableBodyPart';
+import TableBodyAddPart from './TableBodyAddPart';
+import { editApiGet, editApiPost } from '../Service/editService';
+import { addApiGet, addApiPost } from '../Service/addService';
 
 const token = localStorage.getItem('react-demo-token');
 
@@ -160,6 +162,9 @@ const EnhancedTable = ( { search } ) => {
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   //-----------------------------------------
+  //-----------------------------------------
+  //-----------------------------------------
+  //-----------------------------------------
 
   const [tasks, setTasks] = useState([])
   const [tempTasks, setTempTasks] = useState([])
@@ -171,9 +176,10 @@ const EnhancedTable = ( { search } ) => {
   };
 
   const [excel, setExcel] = useState([])
-    const excelData = (e)=>{
-      setExcel([...excel,...e])
-    }
+  
+  const excelData = (e)=>{
+    setExcel([...excel,...e])
+  }
 
   useEffect(() => {
     getTasks()
@@ -561,102 +567,11 @@ function outputImg(img) {
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
             />
+
             {/* ------- */}
-            {showRowsInput ? <TableBody>
-              {rowsInput
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const labelId = `enhanced-table-checkbox-${index}`;
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.name)}
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.name}
-                      sx={{ cursor: 'pointer' }}
-                    >
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                      >
-                        {row.name}
-                      </TableCell>
+            {showRowsInput ? <TableBodyAddPart rows={rows} page={page} rowsPerPage={rowsPerPage} TableRow={TableRow} handleClick={()=>handleClick(name)} showRowsInput={showRowsInput} TableCell={TableCell} edit_id_num={edit_id_num} emptyRows={emptyRows} token={token} rowsInput={rowsInput} /> : ''}
 
-                      <TableCell align="center" 
-                      >{row.description}</TableCell>
-
-                      <TableCell align="center"
-                      >{row.price}</TableCell>
-
-                      <TableCell align="center" 
-                      >{row.product_image}</TableCell>
-
-                      <TableCell align="center" 
-                      >{row.action}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody> : ''}
-
-            <TableBody>
-                {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const labelId = `enhanced-table-checkbox-${index}`;
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.name)}
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.name}
-                      sx={{ cursor: 'pointer' }}
-                      className={`${showRowsInput?'add_rows_style':''}`}
-                    >
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                        className={`${row.id!=edit_id_num && edit_id_num!=null ?'product_table_col':''}`}
-                      >
-                        {row.name}
-                      </TableCell>
-
-                      <TableCell align="center" 
-                      className={`${row.id!=edit_id_num && edit_id_num!=null ?'product_table_col':''}`}>{row.description}</TableCell>
-
-                      <TableCell align="center" 
-                      className={`${row.id!=edit_id_num && edit_id_num!=null ?'product_table_col':''}`}>{row.price}</TableCell>
-
-                      <TableCell align="center" 
-                      className={`${row.id!=edit_id_num && edit_id_num!=null ?'product_table_col':''}`}>{row.product_image}</TableCell>
-                      {token != null ? <TableCell 
-                      align="center" 
-                      className={`${row.id!=edit_id_num && edit_id_num!=null ?'product_table_col':''}`}
-                       >{row.action}</TableCell>:null}
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody> 
+            <TableBodyPart rows={rows} page={page} rowsPerPage={rowsPerPage} TableRow={TableRow} handleClick={()=>handleClick(name)} showRowsInput={showRowsInput} TableCell={TableCell} edit_id_num={edit_id_num} emptyRows={emptyRows} token={token} />
              {/* ------ */}
           </Table>
         </TableContainer>
